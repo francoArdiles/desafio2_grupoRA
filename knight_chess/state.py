@@ -39,7 +39,12 @@ class State:
 
     @property
     def value(self):
-        # returns the value of the state
+        # Estados mejores:
+        #   Cuando enemy knights sea menor al estado
+        #   Cuando my caballo no puede comido por otro
+        #   avanzar > retroceder
+        #   lure
+        #   mejor supervivencia de nuetros caballos
         return 1
 
     def get_actions(self):
@@ -48,10 +53,5 @@ class State:
         pass
 
     def __lt__(self, other):
-        # Estados mejores:
-        #   Cuando enemy knights sea menor al estado
-        #   Cuando my caballo no puede comido por otro
-        #   avanzar > retroceder
-        #   lure
-        #   mejor supervivencia de nuetros caballos
+        return self.value() < other.value()
         pass
