@@ -20,6 +20,7 @@ class State:
         self.my_id = None
         self.my_knights = None
         self.enemy_knights = None
+        self.isMax = None
         # 8x8 matrix
         self.board = None
         print('created empty state!')
@@ -35,6 +36,7 @@ class State:
         pass
 
     def is_final(self):
+        #retorna True si es final, False si no
         pass
 
     @property
