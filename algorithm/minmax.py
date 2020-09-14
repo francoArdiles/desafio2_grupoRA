@@ -34,4 +34,4 @@ def minmax(state: State, maxDepth = 99999):
 			if i[1] == minValue:
 				return i
 
-    print('minmax is an empty function!')
+	return (None,0)
