@@ -1,5 +1,4 @@
 import math
-from algorithm.minmax import minmax
 from knight_chess.state import State
 
 def alpha_beta(state: State, alpha, beta, maxDepth=99999):
@@ -12,7 +11,7 @@ def alpha_beta(state: State, alpha, beta, maxDepth=99999):
         for action in state.get_actions():
             child = state.transition(action)
             child.isMax = False
-            value = minmax(child, maxDepth-1)[1] # retorna el valor del estado
+            value = alpha_beta(child,alpha,beta,maxDepth-1)[1] # retorna el valor del estado
             childs.append((action, value))
             if value > maxValue:
                 maxValue = value
@@ -31,7 +30,7 @@ def alpha_beta(state: State, alpha, beta, maxDepth=99999):
         for action in state.get_actions():
             child = state.transition(action)
             child.isMax = True
-            value = minmax(child, maxDepth-1)[1] # retorna el valor del estado
+            value = alpha_beta(child,alpha,beta,maxDepth-1)[1] # retorna el valor del estado
             childs.append((action, value))
             if value < minValue:
                 minValue = value
