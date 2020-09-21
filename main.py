@@ -20,4 +20,6 @@ if __name__ == '__main__':
     # Aplicando algoritmos de busqueda
     final_state1 = alpha_beta(state_c1, float('inf'), float('-inf'))
     final_state2 = minmax(state_c2)
-
+    
+    # Imprimiendo el estado
+    print(state.get_json())
