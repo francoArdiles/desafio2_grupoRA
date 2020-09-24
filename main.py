@@ -10,10 +10,6 @@ if __name__ == '__main__':
         state_json = open("test.json", "r").read()
     else:
         state_json = sys.argv[1]
-        state_json = state_json.replace(r'\"', '"')
-
-    # Obteniendo entrada del controlador
-    state_json = sys.argv[1]
     state_json = state_json.replace(r'\"', '"')
     state = json.loads(state_json)
 
