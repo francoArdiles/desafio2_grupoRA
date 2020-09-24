@@ -36,7 +36,6 @@ class State:
         # 8x8 matrix, using float reads null as nan integer comparison is still
         # possible
         self.board = np.array(knight_dict.get('ids'), dtype=float)
-        print('created empty state!')
 
     def transition(self, action: Action):
         # Copia del estado actual
