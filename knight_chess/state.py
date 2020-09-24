@@ -28,13 +28,15 @@ MOVEMENTS = {
 
 class State:
 
-    def __init__(self):
-        self.my_id = None
-        self.my_knights = None
-        self.enemy_knights = None
+    def __init__(self, knight_dict):
+        self.my_knights = knight_dict.get('my_knights_dict')
+        self.enemy_knights = knight_dict.get('enemy_knights_dict')
         self.isMax = None
-        # 8x8 matrix
-        self.board = None
+        for ids in self.my_knights.keys:
+            self.my_id = int(int(ids)/100)
+        # 8x8 matrix, using float reads null as nan integer comparison is still
+        # possible
+        self.board = np.array(knight_dict.get('ids'), dtype=float)
         print('created empty state!')
 
     def transition(self, action: Action):
@@ -60,8 +62,11 @@ class State:
 
     def get_movement_positions(self, action):
         movement = MOVEMENTS.get(action.knight_movement)
-        position = np.where(self.board == action.knight_id)
-        row, col = position[0][0], position[1][0]
+        if int(action.knight_id/100) == self.my_id:
+            position = self.my_knights.get(str(action.knight_id))
+        else:
+            position = self.enemy_knights.get(str(action.knight_id))
+        row, col = position[0], position[1]
         new_row, new_col = row + movement[0], col + movement[1]
 
         return (row, col), (new_row, new_col)
@@ -71,10 +76,10 @@ class State:
         player_id = int(action.knight_id/100)
         # Esto no deberia ocurrir, por eso es excepcion
         if player_id == 1:
-            if action.knight_id not in self.my_knights:
+            if self.my_knights.get(str(action.knight_id)) is None:
                 raise ValueError(f'Knight {action.knight_id} not in board')
         else:
-            if action.knight_id not in self.enemy_knights:
+            if self.enemy_knights(str(action.knight_id)) is None:
                 raise ValueError(f'Knight {action.knight_id} not in board')
 
         # Validacion de accion
