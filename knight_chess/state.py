@@ -47,15 +47,15 @@ class State:
         start, end = self.get_movement_positions(action)
 
         # identifica el elemento que se encuentra en la casilla objetivo
-        element = new_state.board[end]
+        element = str(new_state.board[end])
         # Limpia la posicion desocupada por el caballo
         new_state.board[start] = np.nan
 
         # Remueve elemento de la lista si es que existe
-        if element in self.enemy_knights:
-            new_state.enemy_knights.remove(element)
-        elif element in self.my_knights:
-            new_state.my_knights.remove(element)
+        if element in self.enemy_knights.keys():
+            new_state.enemy_knights.pop(element)
+        elif element in self.my_knights.keys():
+            new_state.my_knights.pop(element)
 
         new_state.board[end] = action.knight_id
         pass
