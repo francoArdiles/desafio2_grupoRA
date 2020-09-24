@@ -73,7 +73,7 @@ class State:
         # identificacion de casilla actual y objetivo
         player_id = int(action.knight_id/100)
         # Esto no deberia ocurrir, por eso es excepcion
-        if player_id == 1:
+        if player_id == self.my_id:
             if self.my_knights.get(str(action.knight_id)) is None:
                 raise ValueError(f'Knight {action.knight_id} not in board')
         else:
