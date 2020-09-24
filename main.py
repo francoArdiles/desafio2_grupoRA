@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     # Aplicando algoritmos de busqueda
     action_result1 = alpha_beta(state_c1, float('inf'), float('-inf'), maxDepth=5)[0]
-    action_result2 = minmax(state_c2, maxDepth=5)[0]
+    # action_result2 = minmax(state_c2, maxDepth=5)[0]
     
     # Imprimiendo resultado de accion
-    action_result2.send()
+    action_result1.send()

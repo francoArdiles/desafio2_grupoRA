@@ -67,7 +67,7 @@ class State:
         row, col = position[0], position[1]
         new_row, new_col = row + movement[0], col + movement[1]
 
-        return (row, col), (new_row, new_col)
+        return (col, row), (new_col, new_row)
 
     def is_valid_action(self, action):
         # identificacion de casilla actual y objetivo
@@ -87,7 +87,7 @@ class State:
             return False
         if end[0] >= shape[0] or end[1] >= shape[1]:
             return False
-        if (self.board[end]/100) == player_id:
+        if (not np.isnan(self.board[end])) and int(self.board[end]/100) == player_id:
             return False
         return True
 
