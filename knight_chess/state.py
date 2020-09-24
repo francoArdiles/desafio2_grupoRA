@@ -77,7 +77,7 @@ class State:
             if self.my_knights.get(str(action.knight_id)) is None:
                 raise ValueError(f'Knight {action.knight_id} not in board')
         else:
-            if self.enemy_knights(str(action.knight_id)) is None:
+            if self.enemy_knights.get(str(action.knight_id)) is None:
                 raise ValueError(f'Knight {action.knight_id} not in board')
 
         # Validacion de accion
