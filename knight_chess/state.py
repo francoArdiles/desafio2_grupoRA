@@ -39,7 +39,7 @@ class State:
         self.board = np.array(knight_dict.get('ids'), dtype=float)
         print('created empty state!')
 
-    def transition(self, action: Action):
+    def transition(self, action: Action) -> State:
         # Copia del estado actual
         new_state = deepcopy(self)
 
@@ -58,7 +58,7 @@ class State:
             new_state.my_knights.pop(element)
 
         new_state.board[end] = action.knight_id
-        pass
+        return new_state
 
     def get_movement_positions(self, action):
         movement = MOVEMENTS.get(action.knight_movement)
