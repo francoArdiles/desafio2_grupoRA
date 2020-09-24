@@ -73,7 +73,7 @@ class State:
         # identificacion de casilla actual y objetivo
         player_id = int(action.knight_id/100)
         # Esto no deberia ocurrir, por eso es excepcion
-        if player_id == 1:
+        if player_id == self.my_id:
             if self.my_knights.get(str(action.knight_id)) is None:
                 raise ValueError(f'Knight {action.knight_id} not in board')
         else:
@@ -116,13 +116,22 @@ class State:
         else:
             ids = self.enemy_knights.keys()
         valid_actions = []
-        actions = map(self.create_action, ids, MOVEMENTS.keys())
+        actions = []
+        size = len(MOVEMENTS)
+
+        for _ in ids:
+            actions += map(self.create_action, [_]*size, MOVEMENTS.keys())
+        # for a in actions:
+        #     print(a)
 
         for action in actions:
             if self.is_valid_action(action):
                 valid_actions.append(action)
         # Seleccionar los caballos que estan mas adelante
         # Buscar hasta que se coma a un caballo enemigo
+        # print('valid actions\n')
+        # for action in valid_actions:
+        #     print(action)
         return valid_actions
 
     def create_action(self, knight_id, movement):
