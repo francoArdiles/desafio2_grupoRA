@@ -39,7 +39,7 @@ class State:
         self.board = np.array(knight_dict.get('ids'), dtype=float)
         print('created empty state!')
 
-    def transition(self, action: Action) -> State:
+    def transition(self, action: Action):
         # Copia del estado actual
         new_state = deepcopy(self)
 
