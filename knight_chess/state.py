@@ -14,14 +14,14 @@ BLACK = 2
 # + 7 + 0 +
 
 MOVEMENTS = {
-    0: (1, 2),
-    1: (2, 1),
-    2: (2, -1),
-    3: (1, -2),
-    4: (-1, -2),
-    5: (-2, -1),
-    6: (-2, 1),
-    7: (-1, 2),
+    0: (2, 1),
+    1: (1, 2),
+    2: (-1, 2),
+    3: (-2, 1),
+    4: (-2, -1),
+    5: (-1, -2),
+    6: (1, -2),
+    7: (2, -1),
 }
 
 
@@ -64,10 +64,10 @@ class State:
             position = self.my_knights.get(str(action.knight_id))
         else:
             position = self.enemy_knights.get(str(action.knight_id))
-        row, col = position[0], position[1]
+        row, col = position[1], position[0]
         new_row, new_col = row + movement[0], col + movement[1]
 
-        return (col, row), (new_col, new_row)
+        return (row, col), (new_row, new_col)
 
     def is_valid_action(self, action):
         # identificacion de casilla actual y objetivo
@@ -121,17 +121,12 @@ class State:
 
         for _ in ids:
             actions += map(self.create_action, [_]*size, MOVEMENTS.keys())
-        # for a in actions:
-        #     print(a)
 
         for action in actions:
             if self.is_valid_action(action):
                 valid_actions.append(action)
         # Seleccionar los caballos que estan mas adelante
         # Buscar hasta que se coma a un caballo enemigo
-        # print('valid actions\n')
-        # for action in valid_actions:
-        #     print(action)
         return valid_actions
 
     def create_action(self, knight_id, movement):
