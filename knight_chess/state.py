@@ -1,4 +1,3 @@
-import json
 import numpy as np
 from .action import Action
 from copy import deepcopy
@@ -32,7 +31,7 @@ class State:
         self.my_knights = knight_dict.get('my_knights_dict')
         self.enemy_knights = knight_dict.get('enemy_knights_dict')
         self.isMax = None
-        for ids in self.my_knights.keys:
+        for ids in self.my_knights.keys():
             self.my_id = int(int(ids)/100)
         # 8x8 matrix, using float reads null as nan integer comparison is still
         # possible
@@ -87,7 +86,7 @@ class State:
         shape = self.board.shape
         if end[0] < 0 or end[1] < 0:
             return False
-        if end[0] > shape[0] or end[1] > shape[1]:
+        if end[0] >= shape[0] or end[1] >= shape[1]:
             return False
         if (self.board[end]/100) == player_id:
             return False
@@ -109,10 +108,26 @@ class State:
         #   mejor supervivencia de nuetros caballos
         return 1
 
-    def get_actions(self):
+    def get_actions(self, player=None):
+        if player is None:
+            player = self.my_id
+
+        if self.my_id == player:
+            ids = self.my_knights.keys()
+        else:
+            ids = self.enemy_knights.keys()
+        valid_actions = []
+        actions = map(self.create_action, ids, MOVEMENTS.keys())
+
+        for action in actions:
+            if self.is_valid_action(action):
+                valid_actions.append(action)
         # Seleccionar los caballos que estan mas adelante
         # Buscar hasta que se coma a un caballo enemigo
-        pass
+        return valid_actions
+
+    def create_action(self, knight_id, movement):
+        return Action(knight_id, movement)
 
     def __lt__(self, other):
         return self.value() < other.value()
