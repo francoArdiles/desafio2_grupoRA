@@ -94,8 +94,11 @@ class State:
         return True
 
     def is_final(self):
-        #retorna True si es final, False si no
-        pass
+        lose = len(self.my_knights) == 0
+        win = len(self.enemy_knights) == 0
+
+        # Retornando resultado de estado final
+        return lose or win
 
     def value(self):
         # Estados mejores:
