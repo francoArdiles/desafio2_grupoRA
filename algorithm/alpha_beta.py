@@ -14,15 +14,14 @@ def alpha_beta(state: State, alpha, beta, maxDepth=99999):
             value = alpha_beta(child,alpha,beta,maxDepth-1)[1] # retorna el valor del estado
             childs.append((action, value))
             if value > maxValue:
+                i = (action, value)
                 maxValue = value
             if value > alpha:
                 alpha = value
             if beta <= alpha:
                 break
             
-        for i in childs:
-            if i[1] == maxValue:
-                return i
+        return i
 
     else:
         minValue = math.inf
@@ -33,15 +32,14 @@ def alpha_beta(state: State, alpha, beta, maxDepth=99999):
             value = alpha_beta(child,alpha,beta,maxDepth-1)[1] # retorna el valor del estado
             childs.append((action, value))
             if value < minValue:
+                i= (action, value)
                 minValue = value
             if value < beta:
                 beta = value
             if beta <= alpha:
                 break
-            
-        for i in childs:
-            if i[1] == minValue:
-                return i
+
+        return i
 
     return (None,0)
 

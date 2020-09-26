@@ -30,9 +30,8 @@ class State:
     def __init__(self, knight_dict):
         self.my_knights = knight_dict.get('my_knights_dict')
         self.enemy_knights = knight_dict.get('enemy_knights_dict')
-        self.isMax = None
-        for ids in self.my_knights.keys():
-            self.my_id = int(int(ids)/100)
+        self.my_id = int(int(list(self.my_knights.keys())[0])/100)
+        self.isMax = True
         # 8x8 matrix, using float reads null as nan integer comparison is still
         # possible
         self.board = np.array(knight_dict.get('ids'), dtype=float)
@@ -99,34 +98,69 @@ class State:
         return lose or win
 
     def value(self):
+        value = 200
+        if self.my_id == 1:
+            enemy_id = 2.0
+        else:
+            enemy_id = 1.0
         # Estados mejores:
         #   Cuando enemy knights sea menor al estado
+        value -= (len(self.enemy_knights))
         #   Cuando my caballo no puede comido por otro
+        for pos in self.my_knights.values():
+            for i in MOVEMENTS.values():
+                x = i[0] + pos[0] 
+                y = i[1] + pos[1]
+                if x<0 or x>=self.board.shape[0] or y<0 or y>=self.board.shape[1]:
+                    #print("out of border")
+                    continue
+                
+                if not np.isnan(self.board[(x,y)]):
+                    if int(self.board[(x,y)]/100) == enemy_id:
+                        value-=1 
+
         #   avanzar > retroceder
         #   lure
         #   mejor supervivencia de nuetros caballos
-        return 1
+        return value
+
 
     def get_actions(self, player=None):
+        
         if player is None:
             player = self.my_id
-
+        
         if self.my_id == player:
             ids = self.my_knights.keys()
         else:
             ids = self.enemy_knights.keys()
+        
+        """
+        if self.isMax:
+            ids = self.my_knights.keys()
+        else:
+            ids = self.enemy_knights.keys()
+        # 0 1 6 7 bajan
+        # 4 5 2 3 suben
+        if my_id==1: # baja
+            movements = [0,1,6,7]
+        else:
+            movements = [2,3,4,5]
+
+        """
         valid_actions = []
         actions = []
-        size = len(MOVEMENTS)
+        size = len(movements)
 
         for _ in ids:
-            actions += map(self.create_action, [_]*size, MOVEMENTS.keys())
+            actions += map(self.create_action, [_]*size, movements)
 
         for action in actions:
             if self.is_valid_action(action):
                 valid_actions.append(action)
         # Seleccionar los caballos que estan mas adelante
         # Buscar hasta que se coma a un caballo enemigo
+
         return valid_actions
 
     def create_action(self, knight_id, movement):
