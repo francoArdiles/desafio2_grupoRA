@@ -146,14 +146,14 @@ class State:
             movements = [0,1,6,7]
         else:
             movements = [2,3,4,5]
-
         """
+
         valid_actions = []
         actions = []
-        size = len(movements)
+        size = len(MOVEMENTS)
 
         for _ in ids:
-            actions += map(self.create_action, [_]*size, movements)
+            actions += map(self.create_action, [_]*size, MOVEMENTS.keys())
 
         for action in actions:
             if self.is_valid_action(action):
