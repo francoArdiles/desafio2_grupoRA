@@ -15,7 +15,7 @@ def alpha_beta(state: State, alpha, beta, maxDepth=99999):
     if state.isMax:
         maxValue = -math.inf
         childs = []
-        for action in state.get_actions(1):
+        for action in state.get_actions(state.my_id):
             child = state.transition(action)
             child.isMax = False
             value = alpha_beta(child, alpha, beta, maxDepth - 1)[1] # retorna el valor del estado
@@ -34,7 +34,7 @@ def alpha_beta(state: State, alpha, beta, maxDepth=99999):
     else:
         minValue = math.inf
         childs = []
-        for action in state.get_actions(2):
+        for action in state.get_actions(state.my_id%2 + 1):
             child = state.transition(action)
             child.isMax = True
             value = alpha_beta(child, alpha, beta, maxDepth - 1)[1] # retorna el valor del estado
