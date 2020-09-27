@@ -1,3 +1,4 @@
+from typing import List, Tuple, Dict
 import numpy as np
 from .action import Action
 from copy import deepcopy
@@ -14,18 +15,23 @@ BLACK = 2
 # + 7 + 0 +
 
 MOVEMENTS = {
-    0: (2, 1),
-    1: (1, 2),
-    2: (-1, 2),
-    3: (-2, 1),
-    4: (-2, -1),
-    5: (-1, -2),
-    6: (1, -2),
-    7: (2, -1),
+    0: (1, 2),
+    1: (2, 1),
+    2: (2, -1),
+    3: (1, 2),
+    4: (-1, 2),
+    5: (-2, 1),
+    6: (-2, -1),
+    7: (-1, -2),
 }
 
-
 class State:
+
+    my_knights: Dict[str, Tuple[int, int]]
+    enemy_knight: Dict[str, Tuple[int, int]]
+    isMax: bool
+
+    board: List[List]
 
     def __init__(self, knight_dict):
         self.my_knights = knight_dict.get('my_knights_dict')
@@ -34,7 +40,13 @@ class State:
         self.isMax = True
         # 8x8 matrix, using float reads null as nan integer comparison is still
         # possible
-        self.board = np.array(knight_dict.get('ids'), dtype=float)
+        self.board = knight_dict.get('ids')
+
+    def print_state(self):
+        # Este print es feo, pero funciona... no lo cuestionen
+        print("State: ")
+        print('\n'.join([''.join(['{:5}'.format("    ." if item is None \
+            else item) for item in row]) for row in self.board]))
 
     def transition(self, action: Action):
         # Copia del estado actual
@@ -42,41 +54,68 @@ class State:
 
         # identificacion de casilla actual y objetivo
         start, end = self.get_movement_positions(action)
+        x, y = start
+        nx, ny = end
 
         # identifica el elemento que se encuentra en la casilla objetivo
-        if not np.isnan(new_state.board[start]):
-            element = str(int(new_state.board[start]))
-            self.my_knights[element] = list(end)
-        else:
-            element = np.nan
+        id_a_mover = self.board[y][x]
+        id_objetivo = self.board[ny][nx]
 
-        new_state.board[start] = np.nan
-
-        end_element = new_state.board[end]
+        new_state.board[y][x] = None
 
         # Remueve elemento de la lista si es que existe
-        if end_element in self.enemy_knights.keys():
-            new_state.enemy_knights.pop(element)
-        elif end_element in self.my_knights.keys():
-            new_state.my_knights.pop(element)
+        if str(id_objetivo) in self.enemy_knights.keys():
+            new_state.enemy_knights.pop(str(id_objetivo))
+        elif str(id_objetivo) in self.my_knights.keys():
+            new_state.my_knights.pop(str(id_objetivo))
 
-        new_state.board[end] = action.knight_id
+        if id_a_mover in self.enemy_knights.keys():
+            new_state.enemy_knights[id_a_mover] = [nx, ny]
+        elif id_a_mover in self.my_knights.keys():
+            new_state.my_knights[id_a_mover] = [nx, ny]
+
+        new_state.board[ny][nx] = id_a_mover
         return new_state
 
     def get_movement_positions(self, action):
-        movement = MOVEMENTS.get(action.knight_movement)
-        if int(action.knight_id/100) == self.my_id:
-            position = self.my_knights.get(str(action.knight_id))
-        else:
-            position = self.enemy_knights.get(str(action.knight_id))
-        row, col = position[1], position[0]
-        new_row, new_col = row + movement[0], col + movement[1]
+        if action.knight_id in self.enemy_knights.keys():
+            pos = self.enemy_knights[action.knight_id]
+        elif action.knight_id in self.my_knights.keys():
+            pos = self.my_knights[action.knight_id]
 
-        return (row, col), (new_row, new_col)
+        movement_number = action.knight_movement
+        nx, ny = pos
+        if movement_number == 0:
+            nx += 1
+            ny += 2
+        elif movement_number == 1:
+            nx += 2
+            ny += 1
+        elif movement_number == 2:
+            nx += 2
+            ny += -1
+        elif movement_number == 3:
+            nx += 1
+            ny += -2
+        elif movement_number == 4:
+            nx += -1
+            ny += -2
+        elif movement_number == 5:
+            nx += -2
+            ny += -1
+        elif movement_number == 6:
+            nx += -2
+            ny += 1
+        elif movement_number == 7:
+            nx += -1
+            ny += 2
+        else:
+            print("Error: Movimiento no encontrado")
+        return (pos[0], pos[1]), (nx, ny)
 
     def is_valid_action(self, action):
         # identificacion de casilla actual y objetivo
-        player_id = int(action.knight_id/100)
+        player_id = int(int(action.knight_id)/100)
         # Esto no deberia ocurrir, por eso es excepcion
         if player_id == self.my_id:
             if self.my_knights.get(str(action.knight_id)) is None:
@@ -87,12 +126,18 @@ class State:
 
         # Validacion de accion
         start, end = self.get_movement_positions(action)
-        shape = self.board.shape
+        x, y = start
+        nx, ny = end
+        shape = (8, 8)
+        
+        # Validando que esta dentro del tablero
         if end[0] < 0 or end[1] < 0:
             return False
         if end[0] >= shape[0] or end[1] >= shape[1]:
             return False
-        if (not np.isnan(self.board[end])) and int(self.board[end]/100) == player_id:
+
+        # Validando que no se quiere comer a un amigo
+        if (not self.board[ny][nx] is None) and int(self.board[ny][nx]/100) == player_id:
             return False
 
         return True
@@ -105,6 +150,8 @@ class State:
         return lose or win
 
     def value(self):
+        if len(self.enemy_knights) == 0:
+            return 99999
         value = 200
         if self.my_id == 1:
             enemy_id = 2.0
@@ -112,19 +159,20 @@ class State:
             enemy_id = 1.0
         # Estados mejores:
         #   Cuando enemy knights sea menor al estado
-        value -= (len(self.enemy_knights))
+        value -= (len(self.enemy_knights)) * 6
+        value += (len(self.my_knights)) * 4
         #   Cuando my caballo no puede comido por otro
         for pos in self.my_knights.values():
             for i in MOVEMENTS.values():
                 x = i[0] + pos[0] 
                 y = i[1] + pos[1]
-                if x<0 or x>=self.board.shape[0] or y<0 or y>=self.board.shape[1]:
+                if x<0 or x>=8 or y<0 or y>=8:
                     #print("out of border")
                     continue
                 
-                if not np.isnan(self.board[(x,y)]):
-                    if int(self.board[(x,y)]/100) == enemy_id:
-                        value-=1 
+                if not self.board[y][x] is None:
+                    if not int(self.board[y][x]/100) == enemy_id:
+                        value += 1 
 
         #   avanzar > retroceder
         #   lure
@@ -133,7 +181,6 @@ class State:
 
 
     def get_actions(self, player=None):
-        
         if player is None:
             player = self.my_id
         
@@ -141,24 +188,11 @@ class State:
             ids = self.my_knights.keys()
         else:
             ids = self.enemy_knights.keys()
-        
-        """
-        if self.isMax:
-            ids = self.my_knights.keys()
-        else:
-            ids = self.enemy_knights.keys()
-        # 0 1 6 7 bajan
-        # 4 5 2 3 suben
-        if my_id==1: # baja
-            movements = [0,1,6,7]
-        else:
-            movements = [2,3,4,5]
-        """
 
         valid_actions = []
         actions = []
         size = len(MOVEMENTS)
-
+        
         for _ in ids:
             actions += map(self.create_action, [_]*size, MOVEMENTS.keys())
 

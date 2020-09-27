@@ -17,13 +17,14 @@ if __name__ == '__main__':
     # Generando el estado
     state = State(state)
     
-    # print(state.my_knights)
-    # state.transition(Action("100", 0))
-    # print(state.my_knights)
+    #state.print_state()
+    #for action in state.get_actions():
+    #    new_state = state.transition(action)
+    #    new_state.print_state()
 
     ## Copiando el estado
     state_c1 = copy(state)
-    state_c2 = copy(state)
+    #state_c2 = copy(state)
     
     # Aplicando algoritmos de busqueda
     action_result1 = alpha_beta(state_c1, float('-inf'), float('inf'), maxDepth=3)[0]
