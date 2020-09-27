@@ -154,25 +154,14 @@ class State:
             return 99999
         value = 200
         if self.my_id == 1:
-            enemy_id = 2.0
+            enemy_id = 2
         else:
-            enemy_id = 1.0
+            enemy_id = 1
         # Estados mejores:
         #   Cuando enemy knights sea menor al estado
-        value -= (len(self.enemy_knights)) * 6
-        value += (len(self.my_knights)) * 4
+        value -= (len(self.enemy_knights)) * 4
+        value += (len(self.my_knights)) * 5
         #   Cuando my caballo no puede comido por otro
-        for pos in self.my_knights.values():
-            for i in MOVEMENTS.values():
-                x = i[0] + pos[0] 
-                y = i[1] + pos[1]
-                if x<0 or x>=8 or y<0 or y>=8:
-                    #print("out of border")
-                    continue
-                
-                if not self.board[y][x] is None:
-                    if not int(self.board[y][x]/100) == enemy_id:
-                        value += 1 
 
         #   avanzar > retroceder
         #   lure
