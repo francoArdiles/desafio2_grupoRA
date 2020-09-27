@@ -44,14 +44,20 @@ class State:
         start, end = self.get_movement_positions(action)
 
         # identifica el elemento que se encuentra en la casilla objetivo
-        element = str(new_state.board[end])
-        # Limpia la posicion desocupada por el caballo
+        if not np.isnan(new_state.board[start]):
+            element = str(int(new_state.board[start]))
+            self.my_knights[element] = list(end)
+        else:
+            element = np.nan
+
         new_state.board[start] = np.nan
 
+        end_element = new_state.board[end]
+
         # Remueve elemento de la lista si es que existe
-        if element in self.enemy_knights.keys():
+        if end_element in self.enemy_knights.keys():
             new_state.enemy_knights.pop(element)
-        elif element in self.my_knights.keys():
+        elif end_element in self.my_knights.keys():
             new_state.my_knights.pop(element)
 
         new_state.board[end] = action.knight_id
@@ -88,6 +94,7 @@ class State:
             return False
         if (not np.isnan(self.board[end])) and int(self.board[end]/100) == player_id:
             return False
+
         return True
 
     def is_final(self):

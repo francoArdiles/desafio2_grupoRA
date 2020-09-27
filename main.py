@@ -1,5 +1,6 @@
 from algorithm import alpha_beta, minmax
 from knight_chess import State
+from knight_chess.action import Action
 from copy import deepcopy as copy
 import sys
 import json
@@ -16,16 +17,20 @@ if __name__ == '__main__':
     # Generando el estado
     state = State(state)
     
-    # Copiando el estado
+    # print(state.my_knights)
+    # state.transition(Action("100", 0))
+    # print(state.my_knights)
+
+    ## Copiando el estado
     state_c1 = copy(state)
     state_c2 = copy(state)
-
+    
     # Aplicando algoritmos de busqueda
-    action_result1 = alpha_beta(state_c1, float('-inf'), float('inf'), maxDepth=2)[0]
-    #action_result2 = minmax(state_c2, maxDepth=3)[0]
+    action_result1 = alpha_beta(state_c1, float('-inf'), float('inf'), maxDepth=3)[0]
+    # action_result2 = minmax(state_c2, maxDepth=1)[0]
     
     # Imprimiendo resultado de accion
     action_result1.send()
-    #action_result2.send()
+    # action_result2.send()
 
 

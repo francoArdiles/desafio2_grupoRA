@@ -1,7 +1,7 @@
 import math
 from knight_chess.state import State
 
-def minmax(state: State, maxDepth = 99999):
+def minmax(state: State, maxDepth=99999):
     print(maxDepth)
     if state.is_final() or maxDepth == 0:
         return (None, state.value())
@@ -21,8 +21,6 @@ def minmax(state: State, maxDepth = 99999):
             if i[1] == maxValue:
             	print("max {}".format(maxValue))
             	return i
-
-
 
     else:
         minValue = math.inf
