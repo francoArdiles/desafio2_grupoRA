@@ -6,6 +6,12 @@ Implementación de algoritmos de búsqueda adversaria en ejecución de juego kni
 
 El presente código ejecuta un controlador para responder al problema de búsqueda adversaria para knight chess. Este juego consiste en eliminar todas las piezas del adversario en un tablero de 8x8 como el de ajedrez utilizando piezas de caballo con su respectivo movimiento en "L".
 
+## Como ejectutarlo
+Para poder ejecutar nuestro algoritmo se puede clonar nuestro repositorio dentro de la carpeta Knight-Chess. Luego, puede probarlo iniciando el programa de la siguiente forma:
+```bash
+python3 main.py -g "python3 desafio2_grupoRA/main.py"
+```
+
 ## Estructura
 
 Se presentan dos partes, algorithm y knight_chess. El primero contiene los algoritmos de búsqueda adversaria, mientras que el segundo está encargado de las acciones y estados del tablero.
